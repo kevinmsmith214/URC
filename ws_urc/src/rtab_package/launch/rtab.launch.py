@@ -55,15 +55,15 @@ def generate_launch_description():
         parameters=[ekf_config],
     )
 
-    # navsat_transform = Node(
-    #     package='robot_localization',
-    #     executable='navsat_transform_node',
-    #     name='navsat_transform',
-    #     output='screen',
-    #     parameters=[navsat_config],
-    #     remappings=[('/fix', '/navsat'),  
-    #                 ('/imu', '/imu')]  
-    # )
+    navsat_transform = Node(
+        package='robot_localization',
+        executable='navsat_transform_node',
+        name='navsat_transform',
+        output='screen',
+        parameters=[navsat_config],
+        remappings=[('/fix', '/navsat'),  
+                    ('/imu', '/imu')]  
+    )
 
     slam = Node(
         package="rtabmap_slam",
@@ -88,7 +88,9 @@ def generate_launch_description():
             'Mem/InitWMWithAllNodes': 'false',
             'RGBD/ForceOdom3DoF': 'False',
             'RGBD/OptimizeFromGraphEnd': 'True',
-            'Grid/MaxGroundHeight': '0.1'
+            'Grid/MaxGroundHeight': '0.1',
+            'Grid/RayTracing': 'True',
+            'GridGlobal/MinSize': '100',
         }],
         remappings=[
             ('/rgb/image', '/rgb_image'),
@@ -103,6 +105,7 @@ def generate_launch_description():
 
 
     return LaunchDescription([
+        navsat_transform,
         rgbd_odometry,
         localization,
         slam
